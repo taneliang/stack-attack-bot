@@ -1,5 +1,9 @@
 # Stack Attack Bot
 
+[![CircleCI](https://circleci.com/gh/taneliang/stack-attack-bot.svg?style=svg)](https://circleci.com/gh/taneliang/stack-attack-bot)
+[![codecov](https://codecov.io/gh/taneliang/stack-attack-bot/branch/main/graph/badge.svg)](https://codecov.io/gh/taneliang/stack-attack-bot)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a0dbe6e2f701783fd88a/maintainability)](https://codeclimate.com/github/taneliang/stack-attack-bot/maintainability)
+
 A GitHub App built with [Probot](https://github.com/probot/probot) that
 rebases and lands [Stack Attack](https://github.com/taneliang/stack-attack)
 PRs on GitHub.
