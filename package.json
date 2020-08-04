@@ -15,10 +15,11 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc && (tsc -w --preserveWatchOutput & nodemon)",
+    "build:watch": "tsc && (tsc --incremental -w --preserveWatchOutput & nodemon)",
     "dev": "npm run build:watch",
-    "start": "probot run ./lib/index.js",
+    "start": "probot run ./dist/index.js",
     "lint": "eslint **/*.ts",
+    "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },

@@ -1,6 +1,5 @@
 *.pem
 !mock-cert.pem
-lib
 test-reports
 
 # Created by https://www.gitignore.io/api/vim,node,linux,macos,windows,visualstudiocode
