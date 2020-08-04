@@ -1,19 +1,43 @@
-# stack-attack-bot
+# Stack Attack Bot
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that Stack Attack helper and lander
+A GitHub App built with [Probot](https://github.com/probot/probot) that
+rebases and lands [Stack Attack](https://github.com/taneliang/stack-attack)
+PRs on GitHub.
+
+## Usage (envisioned)
+
+Comment on PRs to trigger bot actions.
+
+### Rebasing (i.e. updating) PRs
+
+- Rebasing a PR onto its base branch: `@sttack rebase`
+- Rebasing a PR onto another branch: `@sttack rebase <branch name>`
+- Restacking a stack of PRs: `@sttack rebase-stack` or `@sttack restack`
+
+### Landing PRs
+
+To land a stack, command `@sttack land` on the last PR of the stack that you
+want to land. For example:
+
+```
+↓ #3
+↓ #2 ← If you comment `@sttack land` here,
+↓ #1 ← this PR will also be landed because #2 depends on it
+* base branch (e.g. master, main)
+```
 
 ## Setup
 
 ```sh
 # Install dependencies
-npm install
+yarn
 
 # Run with hot reload
-npm run build:watch
+yarn build:watch
 
 # Compile and run
-npm run build
-npm run start
+yarn build
+yarn start
 ```
 
 ## Contributing
@@ -24,4 +48,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2020 E-Liang Tan <eliang@eliangtan.com>
+[MIT](LICENSE) © 2020 E-Liang Tan <eliang@eliangtan.com>
