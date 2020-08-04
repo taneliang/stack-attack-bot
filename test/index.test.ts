@@ -1,12 +1,9 @@
-import nock from "nock";
-// Requiring our app implementation
-import myProbotApp from "../src";
-import { Probot } from "probot";
-// Requiring our fixtures
-import payload from "./fixtures/issues.opened.json";
-const issueCreatedBody = { body: "Thanks for opening this issue!" };
 import fs from "fs";
 import path from "path";
+import { server, rest } from "../test/server";
+import { Probot } from "probot";
+
+import appFn from "../src";
 
 describe("My Probot app", () => {
   let probot: Probot;
@@ -14,40 +11,57 @@ describe("My Probot app", () => {
 
   beforeAll((done) => {
     fs.readFile(path.join(__dirname, "fixtures/mock-cert.pem"), (err, cert) => {
-      if (err) return done(err);
+      if (err) return done.fail(err);
       mockCert = cert.toString();
       done();
     });
   });
 
   beforeEach(() => {
-    nock.disableNetConnect();
     probot = new Probot({ id: 123, cert: mockCert });
-    // Load our app into probot
-    probot.load(myProbotApp);
+    probot.load(appFn);
   });
 
-  // eslint-disable-next-line jest/no-test-callback
-  test("creates a comment when an issue is opened", async (done) => {
-    // Test that we correctly return a test token
-    nock("https://api.github.com")
-      .post("/app/installations/2/access_tokens")
-      .reply(200, { token: "test" });
+  test("creates a comment when an issue is opened", async () => {
+    const owner = "sttack";
+    const repo = "watermelons";
 
-    // Test that a comment is posted
-    nock("https://api.github.com")
-      .post("/repos/hiimbex/testing-things/issues/1/comments", (body) => {
-        done(expect(body).toMatchObject(issueCreatedBody));
-        return true;
-      })
-      .reply(200);
+    const mockCommentPostHandler = jest.fn().mockImplementation((req, res) => {
+      // Expect a comment to be posted
+      expect(req.body).toMatchObject({
+        body: "Thanks for opening this issue!",
+      });
+      return res();
+    });
 
-    // Receive a webhook event
-    await probot.receive({ id: "1234", name: "issues", payload });
-  });
+    server.use(
+      rest.post(
+        `https://api.github.com/repos/${owner}/${repo}/issues/1/comments`,
+        mockCommentPostHandler
+      )
+    );
 
-  afterEach(() => {
-    nock.cleanAll();
-    nock.enableNetConnect();
+    await probot.receive({
+      id: "1234",
+      name: "issues",
+      payload: {
+        action: "opened",
+        issue: {
+          number: 1,
+          user: {
+            login: owner,
+          },
+        },
+        repository: {
+          name: repo,
+          owner: {
+            login: owner,
+          },
+        },
+      },
+    });
+
+    // Expect 1 comment to be posted
+    expect(mockCommentPostHandler).toHaveBeenCalledTimes(1);
   });
 });
