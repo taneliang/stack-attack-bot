@@ -693,7 +693,7 @@
     "@types/connect" "*"
     "@types/node" "*"
 
-"@types/bunyan@^1.8.4":
+"@types/bunyan@^1.8.4", "@types/bunyan@^1.8.6":
   version "1.8.6"
   resolved "https://registry.yarnpkg.com/@types/bunyan/-/bunyan-1.8.6.tgz#6527641cca30bedec5feb9ab527b7803b8000582"
   integrity sha512-YiozPOOsS6bIuz31ilYqR5SlLif4TBWsousN2aCWLi5233nZSX19tFbcQUPdR7xJ8ypPyxkCGNxg0CIV5n9qxQ==
@@ -1354,7 +1354,7 @@ bunyan-sentry-stream@^1.1.0:
   dependencies:
     lodash.omit "4.5.0"
 
-bunyan@^1.8.12:
+bunyan@^1.8.12, bunyan@^1.8.14:
   version "1.8.14"
   resolved "https://registry.yarnpkg.com/bunyan/-/bunyan-1.8.14.tgz#3d8c1afea7de158a5238c7cb8a66ab6b38dd45b4"
   integrity sha512-LlahJUxXzZLuw/hetUQJmRgZ1LF6+cr5TPpRj6jf327AsiIq2jhYEH4oqUUkVKTor+9w2BT3oxVwhzE5lw9tcg==

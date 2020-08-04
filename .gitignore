@@ -1,6 +1,4 @@
-*.pem
-!mock-cert.pem
-test-reports
+# Custom ignore rules are at the bottom of this file
 
 # Created by https://www.gitignore.io/api/vim,node,linux,macos,windows,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=vim,node,linux,macos,windows,visualstudiocode
@@ -216,3 +214,8 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/vim,node,linux,macos,windows,visualstudiocode
+
+*.pem
+!mock-cert.pem
+test-reports
+!logs/
