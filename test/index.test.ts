@@ -2,10 +2,11 @@ import fs from "fs";
 import path from "path";
 import { server, rest } from "../test/server";
 import { Probot } from "probot";
+import { mockLogger } from "../src/logger/mockLogger";
 
-import appFn from "../src";
+import { makeAppFunction } from "../src";
 
-describe("My Probot app", () => {
+describe("Stack Attack app", () => {
   let probot: Probot;
   let mockCert: string;
 
@@ -19,7 +20,7 @@ describe("My Probot app", () => {
 
   beforeEach(() => {
     probot = new Probot({ id: 123, cert: mockCert });
-    probot.load(appFn);
+    probot.load(makeAppFunction(mockLogger()));
   });
 
   test("creates a comment when an issue is opened", async () => {
@@ -63,5 +64,43 @@ describe("My Probot app", () => {
 
     // Expect 1 comment to be posted
     expect(mockCommentPostHandler).toHaveBeenCalledTimes(1);
+  });
+
+  test("should ignore issue comments that do not address us", async () => {
+    const owner = "sttack";
+    const repo = "watermelons";
+
+    await probot.receive({
+      id: "1234",
+      name: "issue_comment",
+      payload: {
+        action: "created",
+        issue: {
+          number: 17,
+          title: "trigger bot?",
+          user: {
+            login: "24r",
+          },
+          state: "open",
+          locked: false,
+          body: "",
+        },
+        comment: {
+          user: {
+            login: "24r",
+          },
+          author_association: "OWNER", // TODO: Check what this is
+          body: "Comment?",
+        },
+        repository: {
+          name: repo,
+          owner: {
+            login: owner,
+          },
+        },
+      },
+    });
+
+    expect(true).toBeTruthy(); // TODO:
   });
 });
