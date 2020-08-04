@@ -13,6 +13,16 @@ const owner = "sttack";
 const repo = "watermelons";
 const issueNumber = 16;
 
+const stackAttackDescription = `Stack PR by [STACK ATTACK](https://github.com/taneliang/stack-attack):
+- #5 c1
+- **#16 Fourth try**
+- #9 This must work
+- #6 WILL UPDATES WORK??????
+- #7 THird try
+
+Custom text
+`;
+
 function makePullRequestCommentPayload(comment: string, description: string) {
   return {
     id: "1234",
@@ -21,7 +31,7 @@ function makePullRequestCommentPayload(comment: string, description: string) {
       action: "created",
       issue: {
         id: 670684161,
-        number: 16,
+        number: issueNumber,
         title: "Someone else comes along",
         user: {
           login: "24r",
@@ -128,11 +138,17 @@ describe(event, () => {
     expect(mockCommentPostHandler).toHaveBeenCalled();
   });
 
-  it("should handle land commands addressed to us", async () => {
+  it("should respond to land commands on Stack Attack PRs", async () => {
     const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
       expect(req.body).toMatchInlineSnapshot(`
         Object {
-          "body": "Landing!",
+          "body": "Landing!
+
+        \`\`\`
+        ↓ #16
+        ↓ #5
+        * base branch
+        \`\`\`",
         }
       `);
       return res();
@@ -143,7 +159,30 @@ describe(event, () => {
         mockCommentPostHandler
       )
     );
-    await probot.receive(makePullRequestCommentPayload("@sttack land", ""));
+    await probot.receive(
+      makePullRequestCommentPayload("@sttack land", stackAttackDescription)
+    );
+    expect(mockCommentPostHandler).toHaveBeenCalled();
+  });
+
+  it("should send help for land commands on non-Stack Attack PRs", async () => {
+    const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
+      expect(req.body).toMatchInlineSnapshot(`
+        Object {
+          "body": "Hey! Looks like this PR isn't managed by [Stack Attack](https://github.com/taneliang/stack-attack), so we can't land this for you.",
+        }
+      `);
+      return res();
+    });
+    server.use(
+      rest.post(
+        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+        mockCommentPostHandler
+      )
+    );
+    await probot.receive(
+      makePullRequestCommentPayload("@sttack land", "NOT US")
+    );
     expect(mockCommentPostHandler).toHaveBeenCalled();
   });
 
