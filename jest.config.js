@@ -7,6 +7,7 @@ module.exports = {
   // The test environment that will be used for testing
   testEnvironment: "node",
   setupFilesAfterEnv: ["./test/setup-env.ts"],
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: ["src/**/!(*.d).{js,jsx,ts,tsx}"],

@@ -20,8 +20,8 @@
     "start": "probot run ./dist/src/index.js",
     "lint": "eslint **/*.ts",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
-    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch --notify --notifyMode=change"
   },
   "dependencies": {
     "bunyan": "^1.8.14",
