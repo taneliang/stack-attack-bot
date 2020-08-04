@@ -17,7 +17,7 @@
     "build": "tsc",
     "build:watch": "tsc && (tsc --incremental -w --preserveWatchOutput & nodemon)",
     "dev": "npm run build:watch",
-    "start": "probot run ./dist/index.js",
+    "start": "probot run ./dist/src/index.js",
     "lint": "eslint **/*.ts",
     "typecheck": "tsc --noEmit",
     "test": "jest",

@@ -24,7 +24,7 @@ export interface Logger {
 
 /* eslint-enable */
 
-const logRoot = path.join(__dirname, "../../logs");
+const logRoot = path.join(__dirname, "../../../logs");
 
 const streams: Stream[] =
   process.env.NODE_ENV === "production"

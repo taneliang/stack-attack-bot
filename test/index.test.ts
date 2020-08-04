@@ -1,10 +1,12 @@
+import type { ResponseResolver } from "msw/lib/types";
+
 import fs from "fs";
 import path from "path";
-import { server, rest } from "../test/server";
-import { Probot } from "probot";
-import { mockLogger } from "../src/logger/mockLogger";
 
-import { makeAppFunction } from "../src";
+import { Probot } from "probot";
+import { server, rest } from "../test/server";
+import { mockLogger } from "../src/logger/mockLogger";
+import { makeAppFunction } from "../src/makeAppFunction";
 
 describe("Stack Attack app", () => {
   let probot: Probot;
@@ -27,7 +29,7 @@ describe("Stack Attack app", () => {
     const owner = "sttack";
     const repo = "watermelons";
 
-    const mockCommentPostHandler = jest.fn().mockImplementation((req, res) => {
+    const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
       // Expect a comment to be posted
       expect(req.body).toMatchObject({
         body: "Thanks for opening this issue!",
@@ -64,43 +66,5 @@ describe("Stack Attack app", () => {
 
     // Expect 1 comment to be posted
     expect(mockCommentPostHandler).toHaveBeenCalledTimes(1);
-  });
-
-  test("should ignore issue comments that do not address us", async () => {
-    const owner = "sttack";
-    const repo = "watermelons";
-
-    await probot.receive({
-      id: "1234",
-      name: "issue_comment",
-      payload: {
-        action: "created",
-        issue: {
-          number: 17,
-          title: "trigger bot?",
-          user: {
-            login: "24r",
-          },
-          state: "open",
-          locked: false,
-          body: "",
-        },
-        comment: {
-          user: {
-            login: "24r",
-          },
-          author_association: "OWNER", // TODO: Check what this is
-          body: "Comment?",
-        },
-        repository: {
-          name: repo,
-          owner: {
-            login: owner,
-          },
-        },
-      },
-    });
-
-    expect(true).toBeTruthy(); // TODO:
   });
 });
