@@ -87,33 +87,34 @@ describe(event, () => {
     probot.load(makeAppFunction(mockLogger()));
   });
 
-  it("should ignore comments on issues", async () => {
-    const mockCommentPostHandler = jest.fn();
-    server.use(
-      rest.post(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-        mockCommentPostHandler
-      )
-    );
-    await probot.receive(makeIssueCommentPayload("@sttack rebase"));
-    expect(mockCommentPostHandler).not.toHaveBeenCalled();
-  });
+  describe("ignoring", () => {
+    it("should ignore comments on issues", async () => {
+      const mockCommentPostHandler = jest.fn();
+      server.use(
+        rest.post(
+          `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+          mockCommentPostHandler
+        )
+      );
+      await probot.receive(makeIssueCommentPayload("@sttack rebase"));
+      expect(mockCommentPostHandler).not.toHaveBeenCalled();
+    });
 
-  it("should ignore comments not addressed to us", async () => {
-    const mockCommentPostHandler = jest.fn();
-    server.use(
-      rest.post(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-        mockCommentPostHandler
-      )
-    );
-    await probot.receive(makePullRequestCommentPayload("hello", ""));
-    expect(mockCommentPostHandler).not.toHaveBeenCalled();
-  });
+    it("should ignore comments not addressed to us", async () => {
+      const mockCommentPostHandler = jest.fn();
+      server.use(
+        rest.post(
+          `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+          mockCommentPostHandler
+        )
+      );
+      await probot.receive(makePullRequestCommentPayload("hello", ""));
+      expect(mockCommentPostHandler).not.toHaveBeenCalled();
+    });
 
-  it("should send help for comments addressed to us that do not have a valid command", async () => {
-    const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
-      expect(req.body).toMatchInlineSnapshot(`
+    it("should send help for comments addressed to us that do not have a valid command", async () => {
+      const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
+        expect(req.body).toMatchInlineSnapshot(`
         Object {
           "body": "HEY! Thanks for pinging [Stack Attack](https://github.com/taneliang/stack-attack).
 
@@ -126,21 +127,23 @@ describe(event, () => {
         ",
         }
       `);
-      return res();
+        return res();
+      });
+      server.use(
+        rest.post(
+          `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+          mockCommentPostHandler
+        )
+      );
+      await probot.receive(makePullRequestCommentPayload("@sttack hello", ""));
+      expect(mockCommentPostHandler).toHaveBeenCalled();
     });
-    server.use(
-      rest.post(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-        mockCommentPostHandler
-      )
-    );
-    await probot.receive(makePullRequestCommentPayload("@sttack hello", ""));
-    expect(mockCommentPostHandler).toHaveBeenCalled();
   });
 
-  it("should respond to land commands on Stack Attack PRs", async () => {
-    const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
-      expect(req.body).toMatchInlineSnapshot(`
+  describe("land command", () => {
+    it("should respond to land commands on Stack Attack PRs", async () => {
+      const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
+        expect(req.body).toMatchInlineSnapshot(`
         Object {
           "body": "Landing!
 
@@ -151,57 +154,60 @@ describe(event, () => {
         \`\`\`",
         }
       `);
-      return res();
+        return res();
+      });
+      server.use(
+        rest.post(
+          `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+          mockCommentPostHandler
+        )
+      );
+      await probot.receive(
+        makePullRequestCommentPayload("@sttack land", stackAttackDescription)
+      );
+      expect(mockCommentPostHandler).toHaveBeenCalled();
     });
-    server.use(
-      rest.post(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-        mockCommentPostHandler
-      )
-    );
-    await probot.receive(
-      makePullRequestCommentPayload("@sttack land", stackAttackDescription)
-    );
-    expect(mockCommentPostHandler).toHaveBeenCalled();
-  });
 
-  it("should send help for land commands on non-Stack Attack PRs", async () => {
-    const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
-      expect(req.body).toMatchInlineSnapshot(`
+    it("should send help for land commands on non-Stack Attack PRs", async () => {
+      const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
+        expect(req.body).toMatchInlineSnapshot(`
         Object {
           "body": "Hey! Looks like this PR isn't managed by [Stack Attack](https://github.com/taneliang/stack-attack), so we can't do this for you.",
         }
       `);
-      return res();
+        return res();
+      });
+      server.use(
+        rest.post(
+          `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+          mockCommentPostHandler
+        )
+      );
+      await probot.receive(
+        makePullRequestCommentPayload("@sttack land", "NOT US")
+      );
+      expect(mockCommentPostHandler).toHaveBeenCalled();
     });
-    server.use(
-      rest.post(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-        mockCommentPostHandler
-      )
-    );
-    await probot.receive(
-      makePullRequestCommentPayload("@sttack land", "NOT US")
-    );
-    expect(mockCommentPostHandler).toHaveBeenCalled();
   });
 
-  it("should handle rebase commands addressed to us", async () => {
-    const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
-      expect(req.body).toMatchInlineSnapshot(`
+  describe("rebase command", () => {
+    it("should handle rebase commands addressed to us", async () => {
+      const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
+        expect(req.body).toMatchInlineSnapshot(`
         Object {
           "body": "Rebase!",
         }
       `);
-      return res();
+        return res();
+      });
+      server.use(
+        rest.post(
+          `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+          mockCommentPostHandler
+        )
+      );
+      await probot.receive(makePullRequestCommentPayload("@sttack rebase", ""));
+      expect(mockCommentPostHandler).toHaveBeenCalled();
     });
-    server.use(
-      rest.post(
-        `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
-        mockCommentPostHandler
-      )
-    );
-    await probot.receive(makePullRequestCommentPayload("@sttack rebase", ""));
-    expect(mockCommentPostHandler).toHaveBeenCalled();
   });
 });

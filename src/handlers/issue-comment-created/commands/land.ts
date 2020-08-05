@@ -1,11 +1,26 @@
 import type { Logger } from "../../../logger";
-import type { ContextType } from "../types";
+import type { ContextType, StackedPullRequest } from "../types";
 
 import {
   extractStackFromDescription,
   sortedDependenciesOfPullRequest,
 } from "../util/stacks";
 import { sendNotManagedHelp, postComment } from "../util/post-comment";
+
+function announceLanding(
+  context: ContextType,
+  stack: StackedPullRequest[]
+): Promise<void> {
+  return postComment(
+    context,
+    `Landing!\n\n\`\`\`\n${stack
+      .map(
+        ({ number }, index) =>
+          `${index === stack.length - 1 ? "↓" : "|"} #${number}`
+      )
+      .join("\n")}\n* base branch\n\`\`\``
+  );
+}
 
 export async function handleLandCommand(
   context: ContextType,
@@ -38,15 +53,7 @@ export async function handleLandCommand(
 
   // TODO: Limit the number of PRs in the stack to prevent DDOS
 
-  await postComment(
-    context,
-    `Landing!\n\n\`\`\`\n${stackBelowThisPullRequest
-      .map(
-        ({ number }, index) =>
-          `${
-            index === stackBelowThisPullRequest.length - 1 ? "↓" : "|"
-          } #${number}`
-      )
-      .join("\n")}\n* base branch\n\`\`\``
-  );
+  await announceLanding(context, stackBelowThisPullRequest);
+
+  // await landPullRequest()
 }
