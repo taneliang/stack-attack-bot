@@ -145,7 +145,7 @@ describe(event, () => {
           "body": "Landing!
 
         \`\`\`
-        ↓ #16
+        | #16
         ↓ #5
         * base branch
         \`\`\`",
@@ -169,7 +169,7 @@ describe(event, () => {
     const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
       expect(req.body).toMatchInlineSnapshot(`
         Object {
-          "body": "Hey! Looks like this PR isn't managed by [Stack Attack](https://github.com/taneliang/stack-attack), so we can't land this for you.",
+          "body": "Hey! Looks like this PR isn't managed by [Stack Attack](https://github.com/taneliang/stack-attack), so we can't do this for you.",
         }
       `);
       return res();
