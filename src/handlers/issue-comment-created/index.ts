@@ -60,7 +60,7 @@ export const handler = (logger: Logger) => async (
       return handleLandCommand(context, logger);
     case "rebase":
       logger.info(otherArguments, "Rebase command received");
-      return handleRebaseCommand(context);
+      return handleRebaseCommand(context, logger);
     default:
       logger.info({ command, otherArguments }, "Unknown command received");
       return sendGenericHelp(context);
