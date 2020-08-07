@@ -17,8 +17,6 @@ export const makeAppFunction = (logger: Logger): ApplicationFunction => (
     await context.github.issues.createComment(issueComment);
   });
 
-  // TODO: Detect completion of required status checks
-
   handlers.forEach((handler) => app.on(handler.event, handler.handler(logger)));
 
   app.on("pull_request.closed", async (context) => {
@@ -29,5 +27,18 @@ export const makeAppFunction = (logger: Logger): ApplicationFunction => (
     // TODO: Find next PR in stack
     // TODO: Check if next PR in stack is being landed
     // TODO: If next PR in stack is being landed, rebase it
+  });
+
+  app.on("check_run", async (context) => {
+    const { event, payload } = context;
+    logger.debug({ event, payload }, "Got event");
+  });
+  app.on("check_suite", async (context) => {
+    const { event, payload } = context;
+    logger.debug({ event, payload }, "Got event");
+  });
+  app.on("push", async (context) => {
+    const { event, payload } = context;
+    logger.debug({ event, payload }, "Got event");
   });
 };

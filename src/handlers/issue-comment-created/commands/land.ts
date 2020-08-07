@@ -85,11 +85,11 @@ export async function handleLandCommand(
 
   await announceLanding(context, stackBelowThisPullRequest);
 
-  // COMBAK: Land last PR
+  // TODO: Land last PR
 
-  await landPullRequest(
-    context,
-    logger,
-    stackBelowThisPullRequest[stackBelowThisPullRequest.length - 1]
-  );
+  // await landPullRequest(
+  //   context,
+  //   logger,
+  //   stackBelowThisPullRequest[stackBelowThisPullRequest.length - 1]
+  // );
 }
