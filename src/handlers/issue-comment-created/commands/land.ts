@@ -7,10 +7,16 @@ import {
 } from "../util/stacks";
 import { sendNotManagedHelp, postComment } from "../util/post-comment";
 
+// async function getPullRequestInfo(context: ContextType): Promise<PullRequest> {
+//   const derp = await context.github.pulls.get(context.issue());
+//   derp.data.state;
+// }
+
 function announceLanding(
   context: ContextType,
   stack: StackedPullRequest[]
 ): Promise<void> {
+  // TODO: Spray landing comments with hidden metadata
   return postComment(
     context,
     `Landing!\n\n\`\`\`\n${stack
@@ -22,13 +28,37 @@ function announceLanding(
   );
 }
 
+async function landPullRequest(
+  context: ContextType,
+  logger: Logger,
+  pullRequest: StackedPullRequest
+): Promise<void> {
+  logger.info({ pullRequest }, "Landing pull request");
+  const { status, data } = await context.github.pulls.merge(
+    context.issue({
+      number: pullRequest.number,
+      merge_method: "rebase",
+    })
+  );
+  logger.info({ pullRequest, status, data }, "Landed pull request");
+}
+
 export async function handleLandCommand(
   context: ContextType,
   logger: Logger
 ): Promise<void> {
-  const { body, number } = context.payload.issue;
+  const { body, number, state } = context.payload.issue;
+
+  // Ignore closed PRs
+  if (state !== "open") {
+    await postComment(context, "Oops, we can't land closed PRs.");
+    return;
+  }
 
   // TODO: Check if commenter has write rights
+
+  // TODO: Determine state of PR (closed, landing, rebasing) and metadata
+  // (landing stack, rebasing stack, whole stack)
 
   const stackMap = extractStackFromDescription(body, logger);
   if (!stackMap) {
@@ -55,5 +85,11 @@ export async function handleLandCommand(
 
   await announceLanding(context, stackBelowThisPullRequest);
 
-  // await landPullRequest()
+  // COMBAK: Land last PR
+
+  await landPullRequest(
+    context,
+    logger,
+    stackBelowThisPullRequest[stackBelowThisPullRequest.length - 1]
+  );
 }
