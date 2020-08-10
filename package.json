@@ -25,9 +25,10 @@
   },
   "dependencies": {
     "bunyan": "^1.8.14",
-    "github-rebase": "^1.1.0",
+    "github-cherry-pick": "^1.1.0",
     "nullthrows": "^1.1.1",
-    "probot": "^9.13.0"
+    "probot": "^9.13.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",

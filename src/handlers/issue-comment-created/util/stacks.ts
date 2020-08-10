@@ -3,11 +3,15 @@ import type { Logger } from "../../../logger";
 
 import nullthrows from "nullthrows";
 
+export function isStackAttackPullRequest(description: string): boolean {
+  return description.startsWith("Stack PR");
+}
+
 export function extractStackFromDescription(
   description: string,
   logger: Logger
 ): Map<number, StackedPullRequest> | null {
-  if (!description.startsWith("Stack PR")) {
+  if (!isStackAttackPullRequest(description)) {
     return null;
   }
 

@@ -29,6 +29,10 @@ export const makeAppFunction = (logger: Logger): ApplicationFunction => (
     // TODO: If next PR in stack is being landed, rebase it
   });
 
+  app.on("pull_request", async (context) => {
+    const { event, payload } = context;
+    logger.debug({ event, payload }, "Got event");
+  });
   app.on("check_run", async (context) => {
     const { event, payload } = context;
     logger.debug({ event, payload }, "Got event");
