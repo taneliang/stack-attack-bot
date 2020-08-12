@@ -14,6 +14,7 @@ function parseCommandFromIssueDescription(
   const commandComponents = body
     .substr(commandAddressPrefix.length)
     .split("\n")
+    .map((component) => component.trim())
     .join(" ")
     .split(" ");
 
