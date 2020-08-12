@@ -1,4 +1,5 @@
 import type { ContextType } from "../types";
+import { commandAddressPrefix } from "./commandAddressPrefix";
 
 export async function postComment(
   context: ContextType,
@@ -11,15 +12,9 @@ export async function postComment(
 export function sendGenericHelp(context: ContextType): Promise<void> {
   return postComment(
     context,
-    `HEY! Thanks for pinging [Stack Attack](https://github.com/taneliang/stack-attack).
+    `HEY! Thanks for pinging [STACK ATTACK](https://github.com/taneliang/stack-attack)!
 
-Here's how you can use me:
-
-* Ask me to land a stack of Stack Attack PRs: \`@sttack land\`
-* Ask me to rebase a stack of Stack Attack PRs: \`@sttack rebase\`
-
-🥞
-`
+I dare you – comment \`${commandAddressPrefix}rebase\` and I'll rebase this stacked pull request! 🥞`
   );
 }
 

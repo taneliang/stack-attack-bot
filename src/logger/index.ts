@@ -2,8 +2,8 @@
 
 import path from "path";
 import bunyan, { Stream } from "bunyan";
-import getSentryStream from "./SentryStream";
 import bunyanLogentries from "bunyan-logentries";
+import getSentryStream from "./SentryStream";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 

@@ -18,16 +18,16 @@ When a base branch for a stacked pull request has been updated, Stack Attack
 can help you to rebase it to resolve merge conflicts and prepare it for
 merging.
 
-Simply comment `@sttack rebase` on the PR to rebase the PR!
+Simply comment `@StackAttack rebase` on the PR to rebase the PR!
 
 ### Landing PRs (TODO)
 
-To land a stack, command `@sttack land` on the last PR of the stack that you
+To land a stack, command `@StackAttack land` on the last PR of the stack that you
 want to land. For example:
 
 ```
 ↓ #3
-↓ #2 ← If you comment `@sttack land` here,
+↓ #2 ← If you comment `@StackAttack land` here,
 ↓ #1 ← this PR will also be landed because #2 depends on it
 * base branch (e.g. master, main)
 ```

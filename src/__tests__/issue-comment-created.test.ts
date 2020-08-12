@@ -9,6 +9,7 @@ import { server, rest } from "../../test/server";
 import { mockLogger } from "../logger/mockLogger";
 import { event } from "../handlers/issue-comment-created";
 import { makeAppFunction } from "../makeAppFunction";
+import { commandAddressPrefix } from "../handlers/issue-comment-created/util/commandAddressPrefix";
 
 jest.mock("github-cherry-pick");
 
@@ -105,7 +106,9 @@ describe(event, () => {
           mockCommentPostHandler
         )
       );
-      await probot.receive(makeIssueCommentPayload("@sttack rebase"));
+      await probot.receive(
+        makeIssueCommentPayload(`${commandAddressPrefix}rebase`)
+      );
       expect(mockCommentPostHandler).not.toHaveBeenCalled();
     });
 
@@ -124,18 +127,12 @@ describe(event, () => {
     it("should send help for comments addressed to us that do not have a valid command", async () => {
       const mockCommentPostHandler: ResponseResolver = jest.fn((req, res) => {
         expect(req.body).toMatchInlineSnapshot(`
-                  Object {
-                    "body": "HEY! Thanks for pinging [Stack Attack](https://github.com/taneliang/stack-attack).
+          Object {
+            "body": "HEY! Thanks for pinging [STACK ATTACK](https://github.com/taneliang/stack-attack)!
 
-                  Here's how you can use me:
-
-                  * Ask me to land a stack of Stack Attack PRs: \`@sttack land\`
-                  * Ask me to rebase a stack of Stack Attack PRs: \`@sttack rebase\`
-
-                  🥞
-                  ",
-                  }
-              `);
+          I dare you – comment \`@StackAttack rebase\` and I'll rebase this stacked pull request! 🥞",
+          }
+        `);
         return res();
       });
       server.use(
@@ -144,7 +141,9 @@ describe(event, () => {
           mockCommentPostHandler
         )
       );
-      await probot.receive(makePullRequestCommentPayload("@sttack hello", ""));
+      await probot.receive(
+        makePullRequestCommentPayload(`${commandAddressPrefix}hello`, "")
+      );
       expect(mockCommentPostHandler).toHaveBeenCalled();
     });
   });
@@ -172,7 +171,10 @@ describe(event, () => {
         )
       );
       await probot.receive(
-        makePullRequestCommentPayload("@sttack land", stackAttackDescription)
+        makePullRequestCommentPayload(
+          `${commandAddressPrefix}land`,
+          stackAttackDescription
+        )
       );
       expect(mockCommentPostHandler).toHaveBeenCalled();
     });
@@ -193,7 +195,7 @@ describe(event, () => {
         )
       );
       await probot.receive(
-        makePullRequestCommentPayload("@sttack land", "NOT US")
+        makePullRequestCommentPayload(`${commandAddressPrefix}land`, "NOT US")
       );
       expect(mockCommentPostHandler).toHaveBeenCalled();
     });
@@ -217,7 +219,7 @@ describe(event, () => {
       );
       await probot.receive(
         makePullRequestCommentPayload(
-          "@sttack rebase",
+          `${commandAddressPrefix}rebase`,
           stackAttackDescription,
           "closed"
         )
@@ -241,7 +243,7 @@ describe(event, () => {
         )
       );
       await probot.receive(
-        makePullRequestCommentPayload("@sttack rebase", "NOT US")
+        makePullRequestCommentPayload(`${commandAddressPrefix}rebase`, "NOT US")
       );
       expect(mockCommentPostHandler).toHaveBeenCalled();
     });
@@ -320,7 +322,10 @@ describe(event, () => {
         )
       );
       await probot.receive(
-        makePullRequestCommentPayload("@sttack rebase", stackAttackDescription)
+        makePullRequestCommentPayload(
+          `${commandAddressPrefix}rebase`,
+          stackAttackDescription
+        )
       );
 
       expect(mockReactionsCreateForIssueCommentHandler).toHaveBeenCalled();

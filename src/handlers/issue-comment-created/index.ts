@@ -4,10 +4,9 @@ import type { ContextType } from "./types";
 import { handleLandCommand } from "./commands/land";
 import { handleRebaseCommand } from "./commands/rebase";
 import { sendGenericHelp } from "./util/post-comment";
+import { commandAddressPrefix } from "./util/commandAddressPrefix";
 
 export const event = "issue_comment.created";
-
-const commandAddressPrefix = "@sttack ";
 
 function parseCommandFromIssueDescription(
   body: string
