@@ -1,24 +1,26 @@
 # Stack Attack Bot
 
-[![CircleCI](https://circleci.com/gh/taneliang/stack-attack-bot.svg?style=svg)](https://circleci.com/gh/taneliang/stack-attack-bot)
-[![codecov](https://codecov.io/gh/taneliang/stack-attack-bot/branch/main/graph/badge.svg)](https://codecov.io/gh/taneliang/stack-attack-bot)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a0dbe6e2f701783fd88a/maintainability)](https://codeclimate.com/github/taneliang/stack-attack-bot/maintainability)
+[![CircleCI](https://circleci.com/gh/StackAttack/stack-attack-bot.svg?style=svg)](https://circleci.com/gh/StackAttack/stack-attack-bot)
+[![codecov](https://codecov.io/gh/StackAttack/stack-attack-bot/branch/main/graph/badge.svg)](https://codecov.io/gh/StackAttack/stack-attack-bot)
+[![Maintainability](https://api.codeclimate.com/v1/badges/80de0bbdf29f45ed1e6b/maintainability)](https://codeclimate.com/github/StackAttack/stack-attack-bot/maintainability)
 
 A GitHub App built with [Probot](https://github.com/probot/probot) that
 rebases and lands [Stack Attack](https://github.com/taneliang/stack-attack)
 PRs on GitHub.
 
-## Usage (envisioned)
+## Usage
 
 Comment on PRs to trigger bot actions.
 
 ### Rebasing (i.e. updating) PRs
 
-- Rebasing a PR onto its base branch: `@sttack rebase`
-- Rebasing a PR onto another branch: `@sttack rebase <branch name>`
-- Restacking a stack of PRs: `@sttack rebase-stack` or `@sttack restack`
+When a base branch for a stacked pull request has been updated, Stack Attack
+can help you to rebase it to resolve merge conflicts and prepare it for
+merging.
 
-### Landing PRs
+Simply comment `@sttack rebase` on the PR to rebase the PR!
+
+### Landing PRs (TODO)
 
 To land a stack, command `@sttack land` on the last PR of the stack that you
 want to land. For example:
