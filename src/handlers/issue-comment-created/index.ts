@@ -42,7 +42,11 @@ export const handler = (logger: Logger) => async (
   if (!Object.prototype.hasOwnProperty.call(issue, "pull_request")) return;
 
   // Ignore if the comment is not addressing us
-  if (!commentBody.startsWith(commandAddressPrefix)) return;
+  if (
+    !commentBody.toLowerCase().startsWith(commandAddressPrefix.toLowerCase())
+  ) {
+    return;
+  }
 
   // Parse command
   const commandAndArgumentsOrNull = parseCommandFromIssueDescription(
