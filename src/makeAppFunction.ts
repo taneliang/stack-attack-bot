@@ -8,15 +8,6 @@ const handlers = [issueCommentCreatedHandler];
 export const makeAppFunction = (logger: Logger): ApplicationFunction => (
   app
 ) => {
-  app.on("issues.opened", async (context) => {
-    const { event, payload } = context;
-    logger.debug({ event, payload }, "Got event");
-    const issueComment = context.issue({
-      body: "Thanks for opening this issue!",
-    });
-    await context.github.issues.createComment(issueComment);
-  });
-
   handlers.forEach((handler) => app.on(handler.event, handler.handler(logger)));
 
   app.on("pull_request.closed", async (context) => {
